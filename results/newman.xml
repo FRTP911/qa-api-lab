@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Orders API — Variant 5" tests="4" time="0.037">
+  <testsuite name="Login" id="c5855936-75be-42d8-8a40-3cfd42febb82" timestamp="2026-11-02T11:24:28.742Z" tests="2" failures="0" errors="0" time="0.027">
+    <testcase name="статус 200" time="0.027" classname="Login"/>
+    <testcase name="є accessToken" time="0.027" classname="Login"/>
+  </testsuite>
+  <testsuite name="Create order" id="80582933-d79d-4a5b-a244-0d757afac8a6" timestamp="2026-11-02T11:24:28.742Z" tests="2" failures="0" errors="0" time="0.004">
+    <testcase name="статус 201" time="0.004" classname="CreateOrder"/>
+    <testcase name="сума з доставкою 560" time="0.004" classname="CreateOrder"/>
+  </testsuite>
+  <testsuite name="Update order (PUT)" id="cf4509c8-a70a-4d72-ad9e-140ee151cdd4" timestamp="2026-11-02T11:24:28.742Z" tests="5" failures="0" errors="0" time="0.003">
+    <testcase name="статус 200" time="0.003" classname="UpdateOrderPut"/>
+    <testcase name="Content-Type JSON" time="0.003" classname="UpdateOrderPut"/>
+    <testcase name="subtotal перераховано" time="0.003" classname="UpdateOrderPut"/>
+    <testcase name="total зі знижкою 5%" time="0.003" classname="UpdateOrderPut"/>
+    <testcase name="позиції замінено" time="0.003" classname="UpdateOrderPut"/>
+  </testsuite>
+  <testsuite name="Get updated order" id="6ff384e8-ddc7-4309-973d-1fb86d3c80c3" timestamp="2026-11-02T11:24:28.742Z" tests="4" failures="0" errors="0" time="0.003">
+    <testcase name="статус 200" time="0.003" classname="GetUpdatedOrder"/>
+    <testcase name="id не змінився" time="0.003" classname="GetUpdatedOrder"/>
+    <testcase name="побічний ефект: нова позиція" time="0.003" classname="GetUpdatedOrder"/>
+    <testcase name="побічний ефект: нова сума" time="0.003" classname="GetUpdatedOrder"/>
+  </testsuite>
+</testsuites>

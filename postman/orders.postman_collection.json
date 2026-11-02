@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "b7f6f3a2-5c1e-4a7d-9c2e-5a1f0d3b8e64",
+    "name": "Orders API — Variant 5",
+    "description": "Лабораторна робота 5. Варіант 5: PUT /orders/:id — повна заміна позицій з перерахунком суми та перевіркою ідемпотентності.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('є accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string').and.not.empty);",
+              "pm.collectionVariables.set('token', pm.response.json().accessToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"bob@example.com\",\n  \"password\": \"Secret123\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    {
+      "name": "Create order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('статус 201', () => pm.response.to.have.status(201));",
+              "pm.test('сума з доставкою 560', () => pm.expect(pm.response.json().total).to.eql(560));",
+              "pm.collectionVariables.set('orderId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [{ \"sku\": \"SKU-A\", \"price\": 500, \"qty\": 1 }]\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/orders"
+      }
+    },
+    {
+      "name": "Update order (PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('Content-Type JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+              "const body = pm.response.json();",
+              "pm.test('subtotal перераховано', () => pm.expect(body.subtotal).to.eql(2000));",
+              "pm.test('total зі знижкою 5%', () => pm.expect(body.total).to.eql(1900));",
+              "pm.test('позиції замінено', () => { pm.expect(body.items).to.have.length(1); pm.expect(body.items[0].sku).to.eql('SKU-B'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [{ \"sku\": \"SKU-B\", \"price\": 1000, \"qty\": 2 }]\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/orders/{{orderId}}"
+      }
+    },
+    {
+      "name": "Get updated order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('статус 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('id не змінився', () => pm.expect(body.id).to.eql(pm.collectionVariables.get('orderId')));",
+              "pm.test('побічний ефект: нова позиція', () => pm.expect(body.items[0].sku).to.eql('SKU-B'));",
+              "pm.test('побічний ефект: нова сума', () => pm.expect(body.total).to.eql(1900));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/orders/{{orderId}}"
+      }
+    }
+  ]
+}

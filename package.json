@@ -1,0 +1,29 @@
+{
+  "name": "qa-api-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Laboratory 5: REST API testing with Supertest, JSON Schema, Postman and Newman (variant 5)",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "newman": "newman run postman/orders.postman_collection.json --reporters cli,junit --reporter-junit-export results/newman.xml"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.2",
+    "@types/supertest": "^6.0.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "newman": "^6.2.1",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
